@@ -12,12 +12,15 @@ import AboutUs from "./pages/aboutUs";
 import Register from "./components/auth/register";
 import { AuthProvider } from "./contexts/authContext";
 import Login from "./components/auth/login";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Navbar />
+        <ToastContainer /> {/* Moved ToastContainer here */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />

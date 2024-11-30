@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import { doCreateUserWithEmailAndPassword } from "../../firebase/auth";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -11,37 +12,35 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
-  // Password requirements
   const passwordRequirements = [
     "Password must include at least one symbol (e.g. !, @, #, $, etc.)",
     "Password must include at least one number",
-    "Password must be at least 6 characters long"
+    "Password must be at least 6 characters long",
   ];
 
-  // Regex to validate password
   const isPasswordValid = (password) => {
-    const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/; // At least one number, one symbol, and 6 characters minimum
+    const regex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
     return regex.test(password);
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!isPasswordValid(password)) {
-      setErrorMessage("Password does not meet the required criteria");
+      toast.error("Password does not meet the required criteria");
       return;
     }
-  
+
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
-  
+
     try {
+      setIsRegistering(true);
       const res = await fetch(
-        "https://academia-course-main-default-rtdb.firebaseio.com/userDataRecord.json",
+        "https://academic-course-main-default-rtdb.firebaseio.com/userDataRecord.json",
         {
           method: "POST",
           headers: {
@@ -50,17 +49,18 @@ const Register = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-  
+
       if (res.ok) {
-        alert("Data stored successfully");
-  
+        toast.success("Data stored successfully");
         await doCreateUserWithEmailAndPassword(email, password);
-        navigate("/");
+        navigate("/"); // Page changes, but the toast will persist
       } else {
-        alert("Error storing data");
+        toast.error("Error storing data");
       }
     } catch (error) {
-      setErrorMessage(error.message);
+      toast.error(error.message);
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -110,7 +110,9 @@ const Register = () => {
               {passwordRequirements.map((requirement, index) => (
                 <li key={index} className="flex items-center">
                   <span
-                    className={`mr-2 h-4 w-4 ${isPasswordValid(password) ? 'text-green-500' : 'text-red-500'}`}
+                    className={`mr-2 h-4 w-4 ${
+                      isPasswordValid(password) ? "text-green-500" : "text-red-500"
+                    }`}
                   >
                     ✔
                   </span>
@@ -135,10 +137,6 @@ const Register = () => {
             />
           </div>
 
-          {errorMessage && (
-            <span className="text-red-600 font-bold">{errorMessage}</span>
-          )}
-
           <button
             type="submit"
             disabled={isRegistering}
@@ -149,7 +147,7 @@ const Register = () => {
             }`}
           >
             {isRegistering ? "Signing Up..." : "Sign Up"}
-            </button>
+          </button>
           <div className="text-sm text-center">
             Already have an account?{" "}
             <Link

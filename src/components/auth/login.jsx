@@ -5,6 +5,7 @@ import {
   doSignInWithGoogle,
 } from "../../firebase/auth";
 import { useAuth } from "../../contexts/authContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
@@ -34,6 +35,7 @@ const Login = () => {
       }
 
       try {
+        toast.success("LoggedIn Successfully!");
         await doSignInWithEmailAndPassword(email, password);
       } catch (error) {
         setErrorMessage("Invalid credentials. Please try again.");
