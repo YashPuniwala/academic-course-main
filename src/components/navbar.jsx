@@ -6,37 +6,26 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
   const { currentUser } = useAuth();
-  const { userLoggedIn } = useAuth();
-
   const navigate = useNavigate();
   const location = useLocation();
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
 
   const isLoginOrRegister =
     location.pathname === "/login" || location.pathname === "/register";
 
   const menuVariants = {
-    hidden: {
-      x: "100%", // Slide from the right
-    },
+    hidden: { x: "100%" },
     visible: {
       x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 80,
-      },
+      transition: { type: "spring", stiffness: 80 },
     },
     exit: {
       x: "100%",
-      transition: {
-        type: "spring",
-        stiffness: 80,
-      },
+      transition: { type: "spring", stiffness: 80 },
     },
   };
 
@@ -60,7 +49,7 @@ const Navbar = () => {
           Academia
         </h1>
 
-        {/* Hamburger Menu (visible on small screens) */}
+        {/* Hamburger Menu */}
         <div className="lg:hidden">
           <button
             className={`${
@@ -95,18 +84,12 @@ const Navbar = () => {
               exit="exit"
               variants={menuVariants}
               style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
               <div className="relative w-full h-full">
-                {/* Close Button */}
                 <div className="absolute top-6 right-6">
                   <button
                     className="text-white text-3xl"
@@ -116,7 +99,6 @@ const Navbar = () => {
                   </button>
                 </div>
 
-                {/* Mobile Menu Navigation */}
                 <nav className="flex flex-col items-center justify-center h-full space-y-6">
                   <Link
                     to="/"
@@ -160,7 +142,7 @@ const Navbar = () => {
                   >
                     Contact
                   </Link>
-                  {userLoggedIn ? (
+                  {currentUser ? (
                     <button
                       onClick={() => {
                         doSignOut().then(() => {
@@ -201,12 +183,84 @@ const Navbar = () => {
           <Link
             to="/"
             className={`${
-              isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-            } hover:text-teal-200 text-lg py-2 lg:py-0`}
+              isLoginOrRegister ? "text-black" : "text-white"
+            } hover:text-teal-200 text-lg`}
           >
             Home
           </Link>
-          {/* Add other links similarly */}
+          <Link
+            to="/courses"
+            className={`${
+              isLoginOrRegister ? "text-black" : "text-white"
+            } hover:text-teal-200 text-lg`}
+          >
+            All Courses
+          </Link>
+          <Link
+            to="/aboutUs"
+            className={`${
+              isLoginOrRegister ? "text-black" : "text-white"
+            } hover:text-teal-200 text-lg`}
+          >
+            About Us
+          </Link>
+          <Link
+            to="/pricing"
+            className={`${
+              isLoginOrRegister ? "text-black" : "text-white"
+            } hover:text-teal-200 text-lg`}
+          >
+            Pricing
+          </Link>
+          <Link
+            to="/blogs"
+            className={`${
+              isLoginOrRegister ? "text-black" : "text-white"
+            } hover:text-teal-200 text-lg`}
+          >
+            Blogs
+          </Link>
+          <Link
+            to="/contactUs"
+            className={`${
+              isLoginOrRegister ? "text-black" : "text-white"
+            } hover:text-teal-200 text-lg`}
+          >
+            Contact
+          </Link>
+          {currentUser ? (
+            <button
+              onClick={() => {
+                doSignOut().then(() => {
+                  navigate("/login");
+                });
+              }}
+              className={`${
+                isLoginOrRegister ? "text-black" : "text-white"
+              } hover:text-teal-200 text-lg`}
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link
+                className={`${
+                  isLoginOrRegister ? "text-black" : "text-white"
+                } hover:text-teal-200 text-lg`}
+                to={"/login"}
+              >
+                Login
+              </Link>
+              <Link
+                className={`${
+                  isLoginOrRegister ? "text-black" : "text-white"
+                } hover:text-teal-200 text-lg`}
+                to={"/register"}
+              >
+                Register
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </header>

@@ -14,6 +14,7 @@ import {
   FaTimes,
   FaComment,
 } from "react-icons/fa";
+import {Link} from "react-router-dom"
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([
@@ -37,49 +38,49 @@ const ChatBot = () => {
       title: "Enhancing Adobe Photoshop CC 2020 Skills",
       link: "/courses",
       icon: <FaImage />,
-      video: "https://www.example.com/photoshop.mp4",
+      video: "https://videos.pexels.com/video-files/854918/854918-sd_640_360_30fps.mp4",
     },
     {
       title: "HTML, CSS, and Javascript for Web Developers",
       link: "/courses",
       icon: <FaChalkboardTeacher />,
-      video: "https://www.example.com/web-development.mp4",
+      video: "https://videos.pexels.com/video-files/3116737/3116737-sd_640_360_25fps.mp4",
     },
     {
       title: "Mastering Python for Data Science",
       link: "/courses",
       icon: <FaPython />,
-      video: "https://www.example.com/python-data-science.mp4",
+      video: "https://videos.pexels.com/video-files/7944931/7944931-sd_960_506_25fps.mp4",
     },
     {
       title: "Complete Digital Marketing Strategy",
       link: "/courses",
       icon: <FaBullhorn />,
-      video: "https://www.example.com/digital-marketing.mp4",
+      video: "https://videos.pexels.com/video-files/8036702/8036702-sd_960_506_25fps.mp4",
     },
     {
       title: "Advanced Machine Learning Algorithms",
       link: "/courses",
       icon: <FaBrain />,
-      video: "https://www.example.com/machine-learning.mp4",
+      video: "https://videos.pexels.com/video-files/8731997/8731997-sd_960_506_25fps.mp4",
     },
     {
       title: "Mobile App Development with React Native",
       link: "/courses",
       icon: <FaMobileAlt />,
-      video: "https://www.example.com/react-native.mp4",
+      video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
     },
     {
       title: "UI/UX Design Fundamentals",
       link: "/courses",
       icon: <FaPencilRuler />,
-      video: "https://www.example.com/ui-ux-design.mp4",
+      video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
     },
     {
       title: "Introduction to Cloud Computing",
       link: "/courses",
       icon: <FaCloud />,
-      video: "https://www.example.com/cloud-computing.mp4",
+      video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
     },
   ];
 
@@ -132,14 +133,14 @@ const handleSend = () => {
                 <h3 className="font-semibold text-gray-800">{result.item.title}</h3>
               </div>
 
-              <a
-                href={result.item.link}
+              <Link
+                to={result.item.link}
                 className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm 
                   hover:bg-blue-600 transition-colors flex items-center space-x-1"
                 rel="noopener noreferrer"
               >
                 <span>Learn More</span>
-              </a>
+              </Link>
             </div>
 
             {/* Course Video */}

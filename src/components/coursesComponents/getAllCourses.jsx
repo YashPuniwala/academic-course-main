@@ -34,7 +34,7 @@ const courses = [
     price: "$200 All Course / $25 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaImage />,
-    video: "https://videos.pexels.com/video-files/854106/854106-hd_1920_1080_30fps.mp4",
+    video: "https://videos.pexels.com/video-files/854918/854918-sd_640_360_30fps.mp4",
   },
   {
     title: "HTML, CSS, and Javascript for Web Developers",
@@ -45,7 +45,7 @@ const courses = [
     price: "$50 All Course / $5 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaChalkboardTeacher />,
-    video: "https://videos.pexels.com/video-files/2169548/2169548-hd_1920_1080_25fps.mp4",
+    video: "https://videos.pexels.com/video-files/3116737/3116737-sd_640_360_25fps.mp4",
   },
   {
     title: "Mastering Python for Data Science",
@@ -56,7 +56,7 @@ const courses = [
     price: "$150 All Course / $20 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaPython />,
-    video: "https://videos.pexels.com/video-files/3862130/3862130-hd_1920_1080_25fps.mp4",
+    video: "https://videos.pexels.com/video-files/7944931/7944931-sd_960_506_25fps.mp4",
   },
   {
     title: "Complete Digital Marketing Strategy",
@@ -67,7 +67,7 @@ const courses = [
     price: "$180 All Course / $18 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaBullhorn />,
-    video: "https://videos.pexels.com/video-files/1595476/1595476-hd_1920_1080_25fps.mp4",
+    video: "https://videos.pexels.com/video-files/8036702/8036702-sd_960_506_25fps.mp4",
   },
   {
     title: "Advanced Machine Learning Algorithms",
@@ -78,7 +78,7 @@ const courses = [
     price: "$250 All Course / $30 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaBrain />,
-    video: "https://videos.pexels.com/video-files/4348266/4348266-hd_1920_1080_25fps.mp4",
+    video: "https://videos.pexels.com/video-files/8731997/8731997-sd_960_506_25fps.mp4",
   },
   {
     title: "Mobile App Development with React Native",
@@ -89,7 +89,7 @@ const courses = [
     price: "$120 All Course / $15 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaMobileAlt />,
-    video: "https://videos.pexels.com/video-files/5426403/5426403-hd_1920_1080_25fps.mp4",
+    video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
   },
   {
     title: "UI/UX Design Fundamentals",
@@ -100,7 +100,7 @@ const courses = [
     price: "$90 All Course / $12 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaPencilRuler />,
-    video: "https://videos.pexels.com/video-files/5877260/5877260-hd_1920_1080_25fps.mp4",
+    video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
   },
   {
     title: "Introduction to Cloud Computing",
@@ -111,7 +111,7 @@ const courses = [
     price: "$160 All Course / $20 per month",
     enrollLink: "ENROLL NOW !",
     icon: <FaCloud />,
-    video: "https://videos.pexels.com/video-files/7241347/7241347-hd_1920_1080_25fps.mp4",
+    video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
   },
 ];
 
