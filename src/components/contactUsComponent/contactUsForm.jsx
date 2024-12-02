@@ -1,6 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-toastify";
 
 const ContactPage = () => {
+  const [name, setName] = useState(""); // Initialize as empty string
+  const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const serviceId = "service_t8r1hjx";
+    const publicKey = "hDEpcUY50Fhpy3ZqW";
+    const templateId = "template_qf6nduj";
+
+    const templateParams = {
+      from_name: name,
+      from_email: email,
+      to_name: "Academic-Course",
+      message: message,
+      subject: subject,
+      contact: contact,
+    };
+
+    emailjs
+      .send(serviceId, templateId, templateParams, publicKey)
+      .then((response) => {
+        toast.success("Email sent successfully!"); // Show success toast
+        // Reset state to avoid undefined values
+        setName("");
+        setEmail("");
+        setContact("");
+        setSubject("");
+        setMessage("");
+      })
+      .catch((error) => {
+        toast.error("Error sending email. Please try again."); // Show error toast
+        console.error("Error sending email", error);
+      });
+  };
+
   return (
     <div>
       <div className="bg-gray-50 flex flex-col lg:flex-row p-8 lg:p-12">
@@ -26,7 +67,7 @@ const ContactPage = () => {
               <p className="text-sm">+ 1235 2355 98</p>
             </div>
           </div>
-          <form className="flex flex-col space-y-3">
+          <form className="flex flex-col space-y-3" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name" className="block font-medium mb-2">
                 Name
@@ -35,6 +76,8 @@ const ContactPage = () => {
                 type="text"
                 id="name"
                 name="name"
+                value={name || ""} // Ensure value is never undefined
+                onChange={(e) => setName(e.target.value)}
                 className="border border-gray-300 px-3 py-2 rounded-md w-full text-sm"
                 placeholder="Enter your name"
               />
@@ -47,8 +90,24 @@ const ContactPage = () => {
                 type="email"
                 id="email"
                 name="email"
+                value={email || ""} // Ensure value is never undefined
+                onChange={(e) => setEmail(e.target.value)}
                 className="border border-gray-300 px-3 py-2 rounded-md w-full text-sm"
                 placeholder="Enter your email"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block font-medium mb-2">
+                Contact
+              </label>
+              <input
+                type="number"
+                id="contact"
+                name="contact"
+                value={contact || ""} // Ensure value is never undefined
+                onChange={(e) => setContact(e.target.value)}
+                className="border border-gray-300 px-3 py-2 rounded-md w-full text-sm"
+                placeholder="Enter your Contact Number"
               />
             </div>
             <div>
@@ -59,6 +118,8 @@ const ContactPage = () => {
                 type="text"
                 id="subject"
                 name="subject"
+                value={subject || ""} // Ensure value is never undefined
+                onChange={(e) => setSubject(e.target.value)}
                 className="border border-gray-300 px-3 py-2 rounded-md w-full text-sm"
                 placeholder="Enter the subject"
               />
@@ -70,6 +131,8 @@ const ContactPage = () => {
               <textarea
                 id="message"
                 name="message"
+                value={message || ""} // Ensure value is never undefined
+                onChange={(e) => setMessage(e.target.value)}
                 className="border border-gray-300 px-3 py-2 rounded-md w-full text-sm"
                 rows="4"
                 placeholder="Write your message here"
@@ -97,43 +160,6 @@ const ContactPage = () => {
             >
               <a href="https://www.gps.ie/">gps tracker sport</a>
             </iframe>
-          </div>
-        </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className="bg-white py-10 lg:py-16">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <h3 className="text-2xl lg:text-3xl font-bold text-center mb-12">
-            Frequently Asked Questions
-          </h3>
-          <div className="space-y-6 lg:space-y-8">
-            <div className="border-b pb-4">
-              <h4 className="font-bold text-lg lg:text-xl mb-2">
-                How do I contact support?
-              </h4>
-              <p className="text-sm lg:text-base text-gray-600">
-                You can reach us via the contact form above, or directly email
-                us at <a href="mailto:support@yoursite.com" className="text-teal-500 underline">support@yoursite.com</a>.
-              </p>
-            </div>
-            <div className="border-b pb-4">
-              <h4 className="font-bold text-lg lg:text-xl mb-2">
-                What is your response time?
-              </h4>
-              <p className="text-sm lg:text-base text-gray-600">
-                Our team typically responds to inquiries within 24-48 hours.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-lg lg:text-xl mb-2">
-                Where is your office located?
-              </h4>
-              <p className="text-sm lg:text-base text-gray-600">
-                Our main office is located at 198 West 21th Street, Suite 721,
-                New York NY 10016. Feel free to visit us during business hours.
-              </p>
-            </div>
           </div>
         </div>
       </div>
