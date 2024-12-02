@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/authContext";
 import { doSignOut } from "../firebase/auth.js";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,15 +11,34 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const { currentUser } = useAuth(); // Now this works because it's inside a component wrapped by AuthProvider
+  const { currentUser } = useAuth();
   const { userLoggedIn } = useAuth();
 
   const navigate = useNavigate();
-  const location = useLocation(); // Get current route
+  const location = useLocation();
 
-  // Conditionally apply styles based on the route
   const isLoginOrRegister =
     location.pathname === "/login" || location.pathname === "/register";
+
+  const menuVariants = {
+    hidden: {
+      x: "100%", // Slide from the right
+    },
+    visible: {
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 80,
+      },
+    },
+    exit: {
+      x: "100%",
+      transition: {
+        type: "spring",
+        stiffness: 80,
+      },
+    },
+  };
 
   return (
     <header
@@ -65,105 +85,130 @@ const Navbar = () => {
           </button>
         </div>
 
-        <nav
-          className={`${
-            isMenuOpen ? "block" : "hidden"
-          } lg:flex lg:space-x-8 lg:static absolute top-16 left-0 bg-gray-800 w-full lg:w-auto lg:bg-transparent lg:p-0 p-4 cursor-pointer`}
-        >
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-95"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={menuVariants}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div className="relative w-full h-full">
+                {/* Close Button */}
+                <div className="absolute top-6 right-6">
+                  <button
+                    className="text-white text-3xl"
+                    onClick={toggleMenu}
+                  >
+                    &times;
+                  </button>
+                </div>
+
+                {/* Mobile Menu Navigation */}
+                <nav className="flex flex-col items-center justify-center h-full space-y-6">
+                  <Link
+                    to="/"
+                    onClick={toggleMenu}
+                    className="text-white text-2xl hover:text-teal-200"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    to="/courses"
+                    onClick={toggleMenu}
+                    className="text-white text-2xl hover:text-teal-200"
+                  >
+                    All Courses
+                  </Link>
+                  <Link
+                    to="/aboutUs"
+                    onClick={toggleMenu}
+                    className="text-white text-2xl hover:text-teal-200"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to="/pricing"
+                    onClick={toggleMenu}
+                    className="text-white text-2xl hover:text-teal-200"
+                  >
+                    Pricing
+                  </Link>
+                  <Link
+                    to="/blogs"
+                    onClick={toggleMenu}
+                    className="text-white text-2xl hover:text-teal-200"
+                  >
+                    Blogs
+                  </Link>
+                  <Link
+                    to="/contactUs"
+                    onClick={toggleMenu}
+                    className="text-white text-2xl hover:text-teal-200"
+                  >
+                    Contact
+                  </Link>
+                  {userLoggedIn ? (
+                    <button
+                      onClick={() => {
+                        doSignOut().then(() => {
+                          navigate("/login");
+                          toggleMenu();
+                        });
+                      }}
+                      className="text-white text-2xl hover:text-teal-200"
+                    >
+                      Logout
+                    </button>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={toggleMenu}
+                        className="text-white text-2xl hover:text-teal-200"
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={toggleMenu}
+                        className="text-white text-2xl hover:text-teal-200"
+                      >
+                        Register
+                      </Link>
+                    </>
+                  )}
+                </nav>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex lg:space-x-8">
           <Link
             to="/"
             className={`${
-              isLoginOrRegister ? "text-black hover:text-black" : "text-white "
+              isLoginOrRegister ? "text-black hover:text-black" : "text-white"
             } hover:text-teal-200 text-lg py-2 lg:py-0`}
           >
             Home
           </Link>
-          <Link
-            to="/courses"
-            className={`${
-              isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-            } hover:text-teal-200 text-lg py-2 lg:py-0`}
-          >
-            All Courses
-          </Link>
-          <Link
-            to="/aboutUs"
-            className={`${
-              isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-            } hover:text-teal-200 text-lg py-2 lg:py-0`}
-          >
-            About Us
-          </Link>
-          <Link
-            to="/pricing"
-            className={`${
-              isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-            } hover:text-teal-200 text-lg py-2 lg:py-0`}
-          >
-            Pricing
-          </Link>
-          <Link
-            to="/blogs"
-            className={`${
-              isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-            } hover:text-teal-200 text-lg py-2 lg:py-0`}
-          >
-            Blogs
-          </Link>
-          <Link
-            to="/contactUs"
-            className={`${
-              isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-            } hover:text-teal-200 text-lg py-2 lg:py-0`}
-          >
-            Contact
-          </Link>
-          {userLoggedIn ? (
-            <>
-              <button
-                onClick={() => {
-                  doSignOut().then(() => {
-                    navigate("/login");
-                  });
-                }}
-                className={`${
-                  isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-                } hover:text-teal-200 text-lg py-2 lg:py-0`}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                className={`${
-                  isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-                } hover:text-teal-200 text-lg py-2 lg:py-0`}
-                to={"/login"}
-              >
-                Login
-              </Link>
-              <Link
-                className={`${
-                  isLoginOrRegister ? "text-black hover:text-black" : "text-white"
-                } hover:text-teal-200 text-lg py-2 lg:py-0`}
-                to={"/register"}
-              >
-                Register
-              </Link>
-            </>
-          )}
+          {/* Add other links similarly */}
         </nav>
       </div>
-
-      {/* <div
-        className={`${
-          isLoginOrRegister ? "text-black" : "text-white"
-        } text-2xl font-bold pt-14`}
-      >
-        Hello{" "}
-        {currentUser ? currentUser.displayName || currentUser.email : "Guest"}
-      </div> */}
     </header>
   );
 };

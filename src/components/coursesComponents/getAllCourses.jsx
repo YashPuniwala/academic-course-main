@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import {
   FaBrain,
   FaBullhorn,
@@ -9,6 +9,8 @@ import {
   FaMobileAlt,
   FaPencilRuler,
   FaPython,
+  FaPlayCircle,
+  FaTimes
 } from "react-icons/fa";
 
 const courses = [
@@ -20,7 +22,8 @@ const courses = [
     duration: "190 hrs",
     price: "$100 All Course / $15 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaLaptopCode />, // Using a laptop code icon
+    icon: <FaLaptopCode />,
+    video: "https://videos.pexels.com/video-files/1494295/1494295-hd_1920_1080_24fps.mp4",
   },
   {
     title: "Enhancing Adobe Photoshop CC 2020 Skills",
@@ -30,7 +33,8 @@ const courses = [
     duration: "125 hrs",
     price: "$200 All Course / $25 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaImage />, // Using an image icon
+    icon: <FaImage />,
+    video: "https://videos.pexels.com/video-files/854106/854106-hd_1920_1080_30fps.mp4",
   },
   {
     title: "HTML, CSS, and Javascript for Web Developers",
@@ -40,7 +44,8 @@ const courses = [
     duration: "50 hrs",
     price: "$50 All Course / $5 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaChalkboardTeacher />, // Using a chalkboard teacher icon
+    icon: <FaChalkboardTeacher />,
+    video: "https://videos.pexels.com/video-files/2169548/2169548-hd_1920_1080_25fps.mp4",
   },
   {
     title: "Mastering Python for Data Science",
@@ -50,7 +55,8 @@ const courses = [
     duration: "120 hrs",
     price: "$150 All Course / $20 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaPython />, // Using a python icon
+    icon: <FaPython />,
+    video: "https://videos.pexels.com/video-files/3862130/3862130-hd_1920_1080_25fps.mp4",
   },
   {
     title: "Complete Digital Marketing Strategy",
@@ -60,7 +66,8 @@ const courses = [
     duration: "100 hrs",
     price: "$180 All Course / $18 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaBullhorn />, // Using a bullhorn (marketing) icon
+    icon: <FaBullhorn />,
+    video: "https://videos.pexels.com/video-files/1595476/1595476-hd_1920_1080_25fps.mp4",
   },
   {
     title: "Advanced Machine Learning Algorithms",
@@ -70,7 +77,8 @@ const courses = [
     duration: "150 hrs",
     price: "$250 All Course / $30 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaBrain />, // Using a brain (machine learning) icon
+    icon: <FaBrain />,
+    video: "https://videos.pexels.com/video-files/4348266/4348266-hd_1920_1080_25fps.mp4",
   },
   {
     title: "Mobile App Development with React Native",
@@ -80,7 +88,8 @@ const courses = [
     duration: "110 hrs",
     price: "$120 All Course / $15 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaMobileAlt />, // Using a mobile icon
+    icon: <FaMobileAlt />,
+    video: "https://videos.pexels.com/video-files/5426403/5426403-hd_1920_1080_25fps.mp4",
   },
   {
     title: "UI/UX Design Fundamentals",
@@ -90,7 +99,8 @@ const courses = [
     duration: "80 hrs",
     price: "$90 All Course / $12 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaPencilRuler />, // Using a pencil ruler (design) icon
+    icon: <FaPencilRuler />,
+    video: "https://videos.pexels.com/video-files/5877260/5877260-hd_1920_1080_25fps.mp4",
   },
   {
     title: "Introduction to Cloud Computing",
@@ -100,7 +110,8 @@ const courses = [
     duration: "130 hrs",
     price: "$160 All Course / $20 per month",
     enrollLink: "ENROLL NOW !",
-    icon: <FaCloud />, // Using a cloud icon
+    icon: <FaCloud />,
+    video: "https://videos.pexels.com/video-files/7241347/7241347-hd_1920_1080_25fps.mp4",
   },
 ];
 
@@ -120,8 +131,38 @@ const coursesCategory = [
 ];
 
 const GetAllCourses = () => {
+  const [fullScreenVideo, setFullScreenVideo] = useState(null);
+
+  const openFullScreenVideo = (videoUrl) => {
+    setFullScreenVideo(videoUrl);
+  };
+
+  const closeFullScreenVideo = () => {
+    setFullScreenVideo(null);
+  };
+
   return (
     <div className="bg-gray-50 py-8 sm:py-16 px-4 sm:px-6 lg:px-8">
+      {/* Full Screen Video Modal */}
+      {fullScreenVideo && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center">
+          <div className="relative w-full max-w-4xl">
+            <button 
+              onClick={closeFullScreenVideo} 
+              className="absolute -top-10 right-0 text-white text-3xl hover:text-gray-300"
+            >
+              <FaTimes />
+            </button>
+            <video 
+              src={fullScreenVideo} 
+              controls 
+              autoPlay 
+              className="w-full h-auto max-h-[90vh]"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-extrabold text-gray-900">Our Courses</h2>
@@ -130,8 +171,18 @@ const GetAllCourses = () => {
           {courses.map((course, index) => (
             <div
               key={index}
-              className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col"
+              className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col relative group"
             >
+              {/* Play Button Overlay */}
+              <div 
+                onClick={() => openFullScreenVideo(course.video)}
+                className="absolute inset-0 z-10 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center cursor-pointer transition-all duration-300"
+              >
+                <FaPlayCircle 
+                  className="text-white opacity-0 group-hover:opacity-100 text-5xl transition-opacity duration-300" 
+                />
+              </div>
+
               {/* Course Content */}
               <div className="px-6 py-4 flex flex-col justify-between flex-1">
                 {/* Title and Icon */}
@@ -170,7 +221,7 @@ const GetAllCourses = () => {
                 </div>
                 <a
                   href="#"
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mt-4 "
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mt-4"
                 >
                   {course.enrollLink}
                 </a>
@@ -180,6 +231,7 @@ const GetAllCourses = () => {
         </div>
       </div>
 
+      {/* Course Categories Section */}
       <div className="bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <h2 className="text-teal-500 text-lg uppercase font-bold">Courses</h2>

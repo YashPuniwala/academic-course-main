@@ -19,7 +19,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "Hi! I'm here to help you find courses. Ask me about any course!",
+      text: "Hi! I'm here to help you find courses. Write only name of the course!",
     },
   ]);
   const [userInput, setUserInput] = useState("");
@@ -29,57 +29,61 @@ const ChatBot = () => {
   const courses = [
     {
       title: "Introducing to Software Engineering",
-      link: "/courses/software-engineering",
+      link: "/courses",
       icon: <FaLaptopCode />,
+      video: "https://videos.pexels.com/video-files/1494295/1494295-hd_1920_1080_24fps.mp4",
     },
     {
       title: "Enhancing Adobe Photoshop CC 2020 Skills",
-      link: "/courses/photoshop",
+      link: "/courses",
       icon: <FaImage />,
+      video: "https://www.example.com/photoshop.mp4",
     },
     {
       title: "HTML, CSS, and Javascript for Web Developers",
-      link: "/courses/web-development",
+      link: "/courses",
       icon: <FaChalkboardTeacher />,
+      video: "https://www.example.com/web-development.mp4",
     },
     {
       title: "Mastering Python for Data Science",
-      link: "/courses/python-data-science",
+      link: "/courses",
       icon: <FaPython />,
+      video: "https://www.example.com/python-data-science.mp4",
     },
     {
       title: "Complete Digital Marketing Strategy",
-      link: "/courses/digital-marketing",
+      link: "/courses",
       icon: <FaBullhorn />,
+      video: "https://www.example.com/digital-marketing.mp4",
     },
     {
       title: "Advanced Machine Learning Algorithms",
-      link: "/courses/machine-learning",
+      link: "/courses",
       icon: <FaBrain />,
+      video: "https://www.example.com/machine-learning.mp4",
     },
     {
       title: "Mobile App Development with React Native",
-      link: "/courses/react-native",
+      link: "/courses",
       icon: <FaMobileAlt />,
+      video: "https://www.example.com/react-native.mp4",
     },
     {
       title: "UI/UX Design Fundamentals",
-      link: "/courses/ui-ux-design",
+      link: "/courses",
       icon: <FaPencilRuler />,
+      video: "https://www.example.com/ui-ux-design.mp4",
     },
     {
       title: "Introduction to Cloud Computing",
-      link: "/courses/cloud-computing",
+      link: "/courses",
       icon: <FaCloud />,
+      video: "https://www.example.com/cloud-computing.mp4",
     },
   ];
 
-  const fuse = new Fuse(courses, {
-    keys: ["title"],
-    threshold: 0.6,
-    includeScore: true,
-    ignoreLocation: true, // Helps with matching words anywhere in the title
-  });
+ 
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -89,63 +93,83 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = () => {
-    if (!userInput.trim()) {
+  const fuse = new Fuse(courses, {
+  keys: ["title"], // We are searching within the 'title' key
+  threshold: 0.3, // Adjusting the threshold for better precision
+  includeScore: true,
+  ignoreLocation: false, // Ensure that matches are relevant to the word position
+  useExtendedSearch: true, // Enable extended search features for better matching
+});
+
+const handleSend = () => {
+  if (!userInput.trim()) {
+    setMessages((prev) => [
+      ...prev,
+      {
+        sender: "bot",
+        text: "Please type something to search for a course.",
+      },
+    ]);
+    return;
+  }
+
+  setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
+
+  // Perform the dynamic search with the user input
+  const results = fuse.search(userInput);  // Searching based on the input
+
+  setTimeout(() => {
+    if (results.length > 0) {
+      const courseMessages = results.map((result) => ({
+        sender: "bot",
+        text: (
+          <div className="flex flex-col items-start bg-gray-100 rounded-lg p-3 space-y-3">
+            <div className="flex items-center bg-gray-100 rounded-lg p-3 space-x-3">
+              <div className="text-2xl text-blue-600 bg-blue-100 p-2 rounded-full">
+                {result.item.icon}
+              </div>
+              <div className="flex-grow">
+                <h3 className="font-semibold text-gray-800">{result.item.title}</h3>
+              </div>
+
+              <a
+                href={result.item.link}
+                className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm 
+                  hover:bg-blue-600 transition-colors flex items-center space-x-1"
+                rel="noopener noreferrer"
+              >
+                <span>Learn More</span>
+              </a>
+            </div>
+
+            {/* Course Video */}
+            <div className="relative w-full max-w-md bg-gray-200 rounded-lg p-3">
+              <video
+                className="w-full h-auto rounded-lg"
+                controls
+                onClick={(e) => e.target.requestFullscreen()}
+              >
+                <source src={result.item.video} type="video/mp4" autoFocus />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        ),
+      }));
+      setMessages((prev) => [...prev, ...courseMessages]);
+    } else {
       setMessages((prev) => [
         ...prev,
         {
           sender: "bot",
-          text: "Please type something to search for a course.",
+          text: "Sorry, I couldn't find any courses related to your query.",
         },
       ]);
-      return;
     }
+  }, 500);
 
-    setMessages((prev) => [...prev, { sender: "user", text: userInput }]);
-
-    // Perform the dynamic search
-    const results = fuse.search(userInput);
-
-    setTimeout(() => {
-      if (results.length > 0) {
-        const courseMessages = results.map((result) => ({
-          sender: "bot",
-          text: (
-            <div className="flex items-center bg-gray-100 rounded-lg p-3 space-x-3">
-            <div className="text-2xl text-blue-600 bg-blue-100 p-2 rounded-full">
-              {result.item.icon}
-            </div>
-            <div className="flex-grow">
-              <h3 className="font-semibold text-gray-800">{result.item.title}</h3>
-            </div>
-            
-            <a
-              href={result.item.link}
-              className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm 
-              hover:bg-blue-600 transition-colors flex items-center space-x-1"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>Learn More</span>
-            </a>
-          </div>
-          
-          ),
-        }));
-        setMessages((prev) => [...prev, ...courseMessages]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          {
-            sender: "bot",
-            text: "Sorry, I couldn't find any courses related to your query.",
-          },
-        ]);
-      }
-    }, 500);
-
-    setUserInput(""); // Clear input field
-  };
+  setUserInput(""); // Clear input field
+};
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -167,8 +191,7 @@ const ChatBot = () => {
 
       {/* Sidebar Chat Window */}
       <div
-        className={`
-          transform transition-transform duration-300 ease-in-out
+        className={`transform transition-transform duration-300 ease-in-out
           ${isChatOpen ? "translate-x-0" : "translate-x-full"}
           fixed inset-y-0 right-0 
           w-full md:w-1/2 lg:w-1/3 
@@ -204,7 +227,7 @@ const ChatBot = () => {
                   message.sender === "bot"
                     ? "bg-gray-200 text-black"
                     : "bg-blue-500 text-white"
-                } px-4 py-2 rounded-lg max-w-[80%]`}
+                } px-4 py-4 rounded-lg max-w-[90%]`}
               >
                 {typeof message.text === "string" ? message.text : message.text}
               </div>
