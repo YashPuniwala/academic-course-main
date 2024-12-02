@@ -3,6 +3,7 @@ import { Navigate, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
 import { doCreateUserWithEmailAndPassword } from "../../firebase/auth";
 import { toast } from "react-toastify";
+import { getAuth, fetchSignInMethodsForEmail } from "firebase/auth";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -24,35 +25,46 @@ const Register = () => {
     return regex.test(password);
   };
 
+  const checkEmailExists = async (email) => {
+    const auth = getAuth();
+    try {
+      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+      return signInMethods.length > 0; // If methods exist, the email is in use
+    } catch (error) {
+      toast.error("Error checking email existence");
+      return false;
+    }
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!isPasswordValid(password)) {
       toast.error("Password does not meet the required criteria");
       return;
     }
-  
+
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
-  
+
     try {
       setIsRegistering(true);
-      
-      // Check if the email already exists in Firebase authentication
-      const userExists = await checkEmailExistence(email);
-      if (userExists) {
+
+      // Check if email already exists
+      const emailExists = await checkEmailExists(email);
+      if (emailExists) {
         toast.error("Email is already in use");
         return;
       }
-  
-      // Create user in authentication
+
+      // Create user in Firebase authentication
       await doCreateUserWithEmailAndPassword(email, password);
-  
-      // If user creation is successful, store data in Realtime Database
+
+      // After user creation, store data in Realtime Database
       const res = await fetch(
-        "https://academic-course-main-default-rtdb.firebaseio.com/userDataRecord.json",
+        "https://academic-course-main-a5b2c-default-rtdb.firebaseio.com/userDataRecord.json",
         {
           method: "POST",
           headers: {
@@ -61,12 +73,12 @@ const Register = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-  
+
       if (res.ok) {
-        toast.success("User registered successfully");
-        navigate("/"); // Redirect to home page
+        toast.success("Registration successful");
+        navigate("/"); // Redirect to the homepage
       } else {
-        toast.error("Error storing data in database");
+        toast.error("Error storing data in the database");
       }
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
@@ -76,20 +88,6 @@ const Register = () => {
       }
     } finally {
       setIsRegistering(false);
-    }
-  };
-  
-  // Function to check if email is already in use
-  const checkEmailExistence = async (email) => {
-    try {
-      const response = await fetch(
-        `https://your-firebase-project.firebaseio.com/users.json?orderBy="email"&equalTo="${email}"`
-      );
-      const data = await response.json();
-      return data ? true : false; // If data exists, the email is already taken
-    } catch (error) {
-      console.error("Error checking email existence:", error);
-      return false;
     }
   };
 

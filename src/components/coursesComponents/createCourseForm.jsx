@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import createCourse from "../../components/coursesComponents/createCourse";
-import { useAuth } from "../../contexts/authContext";
 
 const CreateCourseForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const { currentUser } = useAuth(); // Access currentUser here
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,13 +13,8 @@ const CreateCourseForm = () => {
       return;
     }
 
-    if (!currentUser) {
-      alert("You must be logged in to create a course");
-      return;
-    }
-
     const courseData = { title, description };
-    await createCourse(courseData, currentUser); // Pass currentUser to the function
+    await createCourse(courseData); // No need to pass currentUser anymore
     setTitle("");
     setDescription("");
   };
