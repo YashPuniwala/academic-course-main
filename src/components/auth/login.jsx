@@ -17,28 +17,35 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+  
     if (!isSigningIn) {
       setIsSigningIn(true);
-
+  
       // Email validation
       if (!email || !email.includes("@")) {
         setErrorMessage("Please enter a valid email address.");
         setIsSigningIn(false);
         return;
       }
-
+  
       // Password validation
       if (password.length < 6) {
         setErrorMessage("Password must be at least 6 characters.");
         setIsSigningIn(false);
         return;
       }
-
+  
       try {
-        toast.success("LoggedIn Successfully!");
+        // Attempt to sign in with email and password
         await doSignInWithEmailAndPassword(email, password);
+        
+        // Only show success if login is successful
+        toast.success("Logged in successfully!");
       } catch (error) {
+        // Handle login failure
         setErrorMessage("Invalid credentials. Please try again.");
+        toast.error("Invalid credentials. Please try again.");
+      } finally {
         setIsSigningIn(false);
       }
     }

@@ -26,19 +26,31 @@ const Register = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!isPasswordValid(password)) {
       toast.error("Password does not meet the required criteria");
       return;
     }
-
+  
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
-
+  
     try {
       setIsRegistering(true);
+      
+      // Check if the email already exists in Firebase authentication
+      const userExists = await checkEmailExistence(email);
+      if (userExists) {
+        toast.error("Email is already in use");
+        return;
+      }
+  
+      // Create user in authentication
+      await doCreateUserWithEmailAndPassword(email, password);
+  
+      // If user creation is successful, store data in Realtime Database
       const res = await fetch(
         "https://academic-course-main-default-rtdb.firebaseio.com/userDataRecord.json",
         {
@@ -49,18 +61,35 @@ const Register = () => {
           body: JSON.stringify({ email, password }),
         }
       );
-
+  
       if (res.ok) {
-        toast.success("Data stored successfully");
-        await doCreateUserWithEmailAndPassword(email, password);
-        navigate("/"); // Page changes, but the toast will persist
+        toast.success("User registered successfully");
+        navigate("/"); // Redirect to home page
       } else {
-        toast.error("Error storing data");
+        toast.error("Error storing data in database");
       }
     } catch (error) {
-      toast.error(error.message);
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("Email is already in use");
+      } else {
+        toast.error(error.message);
+      }
     } finally {
       setIsRegistering(false);
+    }
+  };
+  
+  // Function to check if email is already in use
+  const checkEmailExistence = async (email) => {
+    try {
+      const response = await fetch(
+        `https://your-firebase-project.firebaseio.com/users.json?orderBy="email"&equalTo="${email}"`
+      );
+      const data = await response.json();
+      return data ? true : false; // If data exists, the email is already taken
+    } catch (error) {
+      console.error("Error checking email existence:", error);
+      return false;
     }
   };
 
