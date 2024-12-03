@@ -17,9 +17,9 @@ const ContactPage = () => {
     const templateId = "template_qf6nduj";
 
     const templateParams = {
-      from_name: name,
-      from_email: email,
-      to_name: "Academic-Course",
+      from_name: "Academic-Course",  // Use your website's name here
+      from_email: email,             // Use the user's email
+      to_name: "User",       
       message: message,
       subject: subject,
       contact: contact,

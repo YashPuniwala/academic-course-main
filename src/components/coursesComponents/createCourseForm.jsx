@@ -4,7 +4,7 @@ import GetAllCourses from "./getAllCourses"; // Assuming this component handles 
 const CreateCourseForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [instructor, setInstructor]= useState("")
+  const [instructor, setInstructor] = useState("");
   const [rating, setRating] = useState(0.0);
   const [lectures, setLectures] = useState(0);
   const [duration, setDuration] = useState("");
@@ -12,6 +12,7 @@ const CreateCourseForm = () => {
   const [price, setPrice] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false); // New loading state
 
   // Fetch courses from Firebase
   const fetchCourses = async () => {
@@ -79,6 +80,8 @@ const CreateCourseForm = () => {
       return;
     }
 
+    setLoading(true); // Set loading to true when submission starts
+
     try {
       const { videoUrl, publicId } = await uploadVideoToCloudinary(videoFile);
 
@@ -116,17 +119,20 @@ const CreateCourseForm = () => {
       alert("Course created successfully!");
       setTitle("");
       setDescription("");
-      setInstructor("")
-      setRating();
-      setLectures();
+      setInstructor("");
+      setRating(0);
+      setLectures(0);
       setDuration("");
       setPerMonth("");
       setPrice("");
       setVideoFile(null);
       fetchCourses(); // Fetch the updated courses list
+
     } catch (error) {
       console.error("Error creating course:", error);
       alert("Failed to create course.");
+    } finally {
+      setLoading(false); // Set loading to false after process completes
     }
   };
 
@@ -175,12 +181,12 @@ const CreateCourseForm = () => {
           />
         </div>
         <div>
-          <label className="text-sm text-gray-600 font-bold">instructor</label>
+          <label className="text-sm text-gray-600 font-bold">Instructor</label>
           <textarea
             value={instructor}
             onChange={(e) => setInstructor(e.target.value)}
             className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
-            placeholder="Enter course description"
+            placeholder="Enter instructor name"
           />
         </div>
         <div>
@@ -247,14 +253,15 @@ const CreateCourseForm = () => {
         </div>
         <button
           type="submit"
+          disabled={loading} // Disable the button while loading
           className="w-full px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl rounded-lg transition duration-300"
         >
-          Create Course
+          {loading ? "Creating Course..." : "Create Course"} {/* Display loading text */}
         </button>
       </form>
 
       <GetAllCourses courses={courses} onDeleteCourse={deleteCourse} />
-      </>
+    </>
   );
 };
 
