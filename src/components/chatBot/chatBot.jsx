@@ -27,62 +27,33 @@ const ChatBot = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const courses = [
-    {
-      title: "Introducing to Software Engineering",
-      link: "/courses",
-      icon: <FaLaptopCode />,
-      video: "https://videos.pexels.com/video-files/1494295/1494295-hd_1920_1080_24fps.mp4",
-    },
-    {
-      title: "Enhancing Adobe Photoshop CC 2020 Skills",
-      link: "/courses",
-      icon: <FaImage />,
-      video: "https://videos.pexels.com/video-files/854918/854918-sd_640_360_30fps.mp4",
-    },
-    {
-      title: "HTML, CSS, and Javascript for Web Developers",
-      link: "/courses",
-      icon: <FaChalkboardTeacher />,
-      video: "https://videos.pexels.com/video-files/3116737/3116737-sd_640_360_25fps.mp4",
-    },
-    {
-      title: "Mastering Python for Data Science",
-      link: "/courses",
-      icon: <FaPython />,
-      video: "https://videos.pexels.com/video-files/7944931/7944931-sd_960_506_25fps.mp4",
-    },
-    {
-      title: "Complete Digital Marketing Strategy",
-      link: "/courses",
-      icon: <FaBullhorn />,
-      video: "https://videos.pexels.com/video-files/8036702/8036702-sd_960_506_25fps.mp4",
-    },
-    {
-      title: "Advanced Machine Learning Algorithms",
-      link: "/courses",
-      icon: <FaBrain />,
-      video: "https://videos.pexels.com/video-files/8731997/8731997-sd_960_506_25fps.mp4",
-    },
-    {
-      title: "Mobile App Development with React Native",
-      link: "/courses",
-      icon: <FaMobileAlt />,
-      video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
-    },
-    {
-      title: "UI/UX Design Fundamentals",
-      link: "/courses",
-      icon: <FaPencilRuler />,
-      video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
-    },
-    {
-      title: "Introduction to Cloud Computing",
-      link: "/courses",
-      icon: <FaCloud />,
-      video: "https://videos.pexels.com/video-files/4836402/4836402-sd_640_360_25fps.mp4",
-    },
-  ];
+  const [courses, setCourses] = useState([]);
+
+  // Fetch courses from Firebase
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch(
+        "https://academic-course-main-6bec2-default-rtdb.firebaseio.com/courses.json"
+      );
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error("Failed to fetch courses.");
+      }
+  
+      const coursesArray = [];
+      for (const key in data) {
+        coursesArray.push({ id: key, ...data[key] });
+      }
+      console.log(coursesArray);  // Check that videoUrl is included
+      setCourses(coursesArray);  // Set courses data to state
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses(); // Fetch courses when the component is mounted
+  }, []);
 
  
 
@@ -134,9 +105,9 @@ const handleSend = () => {
               </div>
 
               <Link
-                to={result.item.link}
+                to={result.item.videoUrl} // Assuming videoUrl is being used correctly
                 className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm 
-                  hover:bg-blue-600 transition-colors flex items-center space-x-1"
+                          hover:bg-blue-600 transition-colors flex items-center space-x-1"
                 rel="noopener noreferrer"
               >
                 <span>Learn More</span>
@@ -150,7 +121,7 @@ const handleSend = () => {
                 controls
                 onClick={(e) => e.target.requestFullscreen()}
               >
-                <source src={result.item.video} type="video/mp4" autoFocus />
+                <source src={result.item.videoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
@@ -171,6 +142,10 @@ const handleSend = () => {
 
   setUserInput(""); // Clear input field
 };
+
+useEffect(() => {
+  console.log(courses);  // Log courses to verify that videoUrl is present
+}, [courses]);
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {

@@ -59,27 +59,11 @@ const Register = () => {
         return;
       }
 
-      // Create user in Firebase authentication
+      // Create user in Firebase Authentication
       await doCreateUserWithEmailAndPassword(email, password);
 
-      // After user creation, store data in Realtime Database
-      const res = await fetch(
-        "https://academic-course-main-a5b2c-default-rtdb.firebaseio.com/userDataRecord.json",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
-
-      if (res.ok) {
-        toast.success("Registration successful");
-        navigate("/"); // Redirect to the homepage
-      } else {
-        toast.error("Error storing data in the database");
-      }
+      toast.success("Registration successful");
+      navigate("/"); // Redirect to the homepage
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         toast.error("Email is already in use");
